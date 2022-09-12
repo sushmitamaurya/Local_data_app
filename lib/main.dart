@@ -80,15 +80,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _ctrlName,
                 decoration: InputDecoration(labelText: 'Name'),
                 onSaved: (val) => setState(() => _contact.name = val!),
-                validator: (val) =>
-                    (val!.length == 0 ? 'This field is required' : null),
+                // validator: (val) =>
+                //     (val!.length == 0 ? 'This field is required' : null),
               ),
               TextFormField(
                 controller: _ctrlMobile,
                 decoration: InputDecoration(labelText: 'Mobile'),
                 onSaved: (val) => setState(() => _contact.mobile = val!),
-                validator: (val) =>
-                    (val!.length <= 10 ? 'Atleast 10 digit required' : null),
+                // validator: (val) =>
+                //     (val!.length <= 10 ? 'Atleast 10 digit required' : null),
               ),
               Container(
                 margin: EdgeInsets.all(10),
@@ -115,15 +115,16 @@ class _MyHomePageState extends State<MyHomePage> {
     var form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
-      print(_contact.name);
-      print(_contact.mobile);
+      print(_contact);
+      // print(_contact.name);
+      // print(_contact.mobile);
 
       await _dbForm?.insertContact(_contact);
-      // if (_contact.id == null) {
-      //   await _dbForm?.insertContact(_contact);
-      // } else {
-      //   await _dbForm?.updateContact(_contact);
-      // }
+      if (_contact.id != null) {
+        await _dbForm?.insertContact(_contact);
+      } else {
+        await _dbForm?.updateContact(_contact);
+      }
       _refreshContactList();
       resetForm();
     }
