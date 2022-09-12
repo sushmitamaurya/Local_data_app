@@ -34,7 +34,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   Contact _contact = Contact(mobile: '', name: '', id: 0);
   List<Contact> _contacts = [];
-  late DatabaseForm _dbForm;
+  DatabaseForm? _dbForm;
 
   final _formKey = GlobalKey<FormState>();
   final _ctrlName = TextEditingController();
@@ -46,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _dbForm = DatabaseForm.instace;
     });
+    _refreshContactList();
   }
 
   @override
@@ -86,8 +87,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 controller: _ctrlMobile,
                 decoration: InputDecoration(labelText: 'Mobile'),
                 onSaved: (val) => setState(() => _contact.mobile = val!),
-                // validator: (val) =>
-                //     (val!.length <= 10 ? 'Atleast 10 digit required' : null),
+                validator: (val) =>
+                    (val!.length <= 10 ? 'Atleast 10 digit required' : null),
               ),
               Container(
                 margin: EdgeInsets.all(10),
@@ -102,24 +103,28 @@ class _MyHomePageState extends State<MyHomePage> {
       );
 
   _refreshContactList() async {
-    List<Contact> x = await _dbForm.fetchContacts();
+    List<Contact> x = await _dbForm!.fetchContacts();
     setState(() {
       _contacts = x;
+
+      // print(x);
     });
-    _refreshContactList();
   }
 
   _onSubmit() async {
     var form = _formKey.currentState;
     if (form!.validate()) {
       form.save();
-      if (_contact.id == null) {
-        await _dbForm.insertContact(_contact);
-      } else {
-        await _dbForm.updateContact(_contact);
-      }
-      _refreshContactList();
+      print(_contact.name);
+      print(_contact.mobile);
 
+      await _dbForm?.insertContact(_contact);
+      // if (_contact.id == null) {
+      //   await _dbForm?.insertContact(_contact);
+      // } else {
+      //   await _dbForm?.updateContact(_contact);
+      // }
+      _refreshContactList();
       resetForm();
     }
   }
@@ -155,7 +160,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     subtitle: Text(_contacts[index].mobile),
                     trailing: IconButton(
                         onPressed: () async {
-                          await _dbForm.deleteContact(_contacts[index].id);
+                          await _dbForm?.deleteContact(_contacts[index].id);
                           resetForm();
                           _refreshContactList();
                         },
