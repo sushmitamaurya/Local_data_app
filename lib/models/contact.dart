@@ -4,14 +4,14 @@ class Contact {
   static const colName = 'name';
   static const colMobile = 'mobile';
 
-  Contact({required this.id, required this.name, required this.mobile});
+  Contact({this.id, required this.name, required this.mobile});
 
   Contact.fromMap(Map<String, dynamic> map) {
     id = map[colID];
-    name = map[colMobile];
+    name = map[colName];
     mobile = map[colMobile];
   }
-  late int id;
+  late int? id;
   late String name;
   late String mobile;
 
